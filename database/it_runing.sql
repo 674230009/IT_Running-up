@@ -1,3 +1,12 @@
+-- 1. สร้างฐานข้อมูล (หากยังไม่มี) และกำหนด Character Set
+CREATE DATABASE IF NOT EXISTS it_running_db 
+DEFAULT CHARACTER SET utf8mb4 
+COLLATE utf8mb4_unicode_ci;
+
+-- 2. เลือกใช้งานฐานข้อมูล
+USE it_running_db;
+
+-- 3. สร้างตาราง
 CREATE TABLE IF NOT EXISTS events (
     id INT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
