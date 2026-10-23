@@ -1,94 +1,173 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-  <meta charset="UTF-8">
-  <title>IT RUN 2026</title>
-  <style>
-    body { 
-        margin:0 auto; 
-        font-family: Arial, sans-serif; 
-        background:#f9f9f9; 
-                  
-    }
+<?php
+$base_url = '';
+$page_title = 'IT RUN 2026 | ก้าวด้วยใจ สานสายใยไอทีสัมพันธ์';
+$active_nav = 'home';
 
-    header {
-      background:#ff6600;
-      color:#fff; 
-      padding:10px 20px;
-      display:flex; 
-      justify-content:space-between; 
-      align-items:center;
-    }
+require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/config/helpers.php';
 
-    .logo-area { display:flex; align-items:center; }
-    .logo-area img { height:50px; margin-right:10px; }
-    .logo-area h1 { margin:0; font-size:1.5em; }
-    nav a {
-      color:#fff; text-decoration:none; margin:0 10px; font-weight:bold;
-    }
-    nav a:hover { text-decoration:underline; }
-    .banner {
-      background:url('img/week.jpeg') center/cover no-repeat;
-      height:300px; display:flex; align-items:center; justify-content:center;
-      color:#fff; font-size:2em; font-weight:bold;
-      text-shadow:2px 2px 6px rgba(0,0,0,0.7);
-    }
-    .container { 
-        margin:30px auto; 
-        padding:20px; 
-    }
+$upcoming = [];
+$total_events = 0;
+$total_runners = 0;
+$open_events = 0;
 
-    .card {
-      background:#fff; 
-      padding:20px; 
-      border-radius:8px;
-      box-shadow:0 2px 6px rgba(0,0,0,0.1);
-      margin-bottom:20px;
+if ($conn) {
+    try {
+        $upcoming = $conn->query("SELECT * FROM events WHERE status <> 'closed' ORDER BY event_date ASC LIMIT 3")->fetchAll();
+        $total_events = (int) $conn->query("SELECT COUNT(*) FROM events")->fetchColumn();
+        $open_events = (int) $conn->query("SELECT COUNT(*) FROM events WHERE status = 'open'")->fetchColumn();
+        $total_runners = (int) $conn->query("SELECT COUNT(*) FROM competitors")->fetchColumn();
+    } catch (Exception $e) {
+        $upcoming = [];
     }
-    .btn {
-      display:inline-block; padding:10px 15px; border-radius:5px;
-      text-decoration:none; color:#fff; margin:5px;
-    }
-    .btn-orange { background:#ff6600; }
-    .btn-blue { background:#007bff; }
-    .btn-green { background:#28a745; }
-  </style>
-</head>
-<body>
+}
 
-<header>
-  <!-- โลโก้ + ชื่อเว็บ -->
-  <div class="logo-area">
-    <img src="img/it logo พื้นขาว.png" alt="IT RUN Logo">
-    <h1>IT RUN 2026</h1>
-  </div>
-  <!-- เมนูนำทาง -->
-  <nav>
-    <a href="index.php">หน้าหลัก</a>
-    <a href="details.php">รายละเอียด</a>
-    <a href="register.php">สมัครวิ่ง</a>
-    <a href="status.php">ตรวจสอบสถานะ</a>
-  </nav>
-</header>
+include __DIR__ . '/includes/header.php';
+?>
 
-<!-- Banner พร้อมข้อความ overlay -->
-<div class="banner"></div>
-
-<div class="container">
-  <div class="card">
-    <h2>📅 รายละเอียดงาน IT RUN 2026</h2>
-    <p><strong>วันที่จัดงาน:</strong> 22 พฤศจิกายน 2026</p>
-    <p><strong>สถานที่:</strong> ณ วัดเขารังจันทร์ราม อำเภอเมือง จังหวัดนครสวรรค์</p>
-    <p><strong>ระยะทาง:</strong> 5 km / 11 km / 25 km / 40 km</p>
-    <p><strong>อัตราค่าสมัคร (Early Bird):</strong> ฿500 / ฿800 / ฿1,400 / ฿1,800</p>
-    <p><strong>เปิดรับสมัครถึง:</strong> 1 พฤศจิกายน 2026</p>
-    <div style="margin-top: 15px;">
-      <a href="details.php" class="btn btn-blue">รายละเอียดและกติกา</a>
-      <a href="register.php" class="btn btn-green">สมัครวิ่ง</a>
-      <a href="status.php" class="btn btn-orange">ตรวจสอบสถานะ</a>
+<div class="main-wrapper">
+  <!-- HERO -->
+  <section class="page-hero">
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 30px; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 280px;">
+        <span class="page-eyebrow">🏁 ก้าวด้วยใจ สานสายใยไอทีสัมพันธ์</span>
+        <h1 class="page-title-lg">วิ่งไปด้วยกัน<br>ใน <span class="text-gradient">IT RUN 2026</span></h1>
+        <p class="page-lead">
+          งานวิ่งการกุศลที่รวมนักศึกษา ศิษย์เก่า และประชาชนทั่วไปไว้ในเส้นทางเดียวกัน
+          พร้อมระยะ Fun Run ถึง Full Marathon และระบบสมัครออนไลน์ที่ใช้งานง่าย
+        </p>
+        <div class="hero-actions">
+          <a href="pages/register.php" class="btn-primary" style="font-size: 1.02rem; padding: 13px 30px;">🏃 สมัครวิ่งเลย</a>
+          <a href="calendar.php" class="btn-light" style="background: rgba(255,255,255,0.12); color: #fff; box-shadow: none; border: 1px solid rgba(255,255,255,0.22);">🗓️ ดูปฏิทินงานวิ่ง</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><strong><?= number_format($open_events) ?></strong><span>งานที่เปิดรับสมัคร</span></div>
+          <div class="hero-stat"><strong><?= number_format($total_events) ?></strong><span>งานวิ่งในระบบ</span></div>
+          <div class="hero-stat"><strong><?= number_format($total_runners) ?></strong><span>นักวิ่งลงทะเบียน</span></div>
+        </div>
+      </div>
+      <div style="flex-shrink: 0; width: min(360px, 100%);">
+        <div style="background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.32); border-radius: var(--radius-xl); padding: 22px; backdrop-filter: blur(10px); box-shadow: 0 20px 45px -25px rgba(0,0,0,0.6);">
+          <span class="pill-soft" style="background: rgba(255,255,255,0.2); color: #ffffff; border-color: rgba(255,255,255,0.4);">งานหลัก</span>
+          <h3 style="font-size: 1.15rem; font-weight: 900; color: #fff; margin: 12px 0 4px;">IT RUN 2026</h3>
+          <p style="font-size: 0.86rem; color: #ffedd5; line-height: 1.7;">
+            📅 22 พฤศจิกายน 2569<br>
+            📍 วัดเขารังจันทร์ราม จ.นครสวรรค์<br>
+            🏃 5 / 11 / 25 / 40 กม.
+          </p>
+          <div style="margin-top: 16px; height: 1px; background: rgba(255,255,255,0.26);"></div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px;">
+            <span style="font-size: 0.78rem; color: #ffedd5; font-weight: 600;">ค่าสมัครเริ่มต้น</span>
+            <strong style="font-size: 1.4rem; color: #ffffff; font-weight: 900;">฿500</strong>
+          </div>
+        </div>
+      </div>
     </div>
+  </section>
+
+  <!-- ROLE PORTAL -->
+  <div class="section-head">
+    <div>
+      <h2>เลือกเส้นทางของคุณ</h2>
+      <p>ระบบเดียว รองรับ 3 บทบาท ตั้งแต่สมัครวิ่งจนถึงการจัดการหลังบ้าน</p>
+    </div>
+    <a href="portal.php" class="btn-outline" style="padding: 8px 18px; font-size: 0.88rem;">ดูภาพรวมทุกบทบาท →</a>
   </div>
+
+  <div class="role-grid">
+    <article class="role-card">
+      <div class="role-icon">🏃</div>
+      <div>
+        <h3>ผู้สมัคร / นักวิ่ง</h3>
+        <p>สมัครออนไลน์ เลือกระยะทาง ตรวจสอบสถานะ และรับ E-BIB ได้ในไม่กี่ขั้นตอน</p>
+      </div>
+      <ul class="role-features">
+        <li>สมัครและชำระเงินออนไลน์</li>
+        <li>ตรวจสอบสถานะและหมายเลข BIB</li>
+        <li>พิมพ์บัตรนักวิ่ง E-BIB</li>
+      </ul>
+      <div class="role-cta">
+        <a href="pages/register.php" class="btn-primary" style="width: 100%;">เริ่มสมัครวิ่ง →</a>
+      </div>
+    </article>
+
+    <article class="role-card teal">
+      <div class="role-icon">📋</div>
+      <div>
+        <h3>ผู้จัดงาน</h3>
+        <p>ดูแลงานวิ่งที่รับผิดชอบ ตรวจรายชื่อผู้สมัคร และอนุมัติการชำระเงิน/ออก BIB</p>
+      </div>
+      <ul class="role-features">
+        <li>เพิ่มและจัดการงานวิ่ง</li>
+        <li>ดูรายชื่อนักวิ่งแบบเรียลไทม์</li>
+        <li>อนุมัติยอดเงินและออกหมายเลข BIB</li>
+      </ul>
+      <div class="role-cta">
+        <a href="admin/login.php?role=organizer" class="btn-outline" style="width: 100%;">เข้าสู่ระบบผู้จัดงาน →</a>
+      </div>
+    </article>
+
+    <article class="role-card ink">
+      <div class="role-icon">🛡️</div>
+      <div>
+        <h3>แอดมิน</h3>
+        <p>ควบคุมภาพรวมทั้งแพลตฟอร์ม จัดการสิทธิ์ผู้ใช้งาน และดูแลข้อมูลส่วนกลาง</p>
+      </div>
+      <ul class="role-features">
+        <li>ภาพรวมสถิติทั้งระบบ</li>
+        <li>จัดการบัญชีผู้จัดและแอดมิน</li>
+        <li>ดูแลงานวิ่งและรายชื่อทั้งหมด</li>
+      </ul>
+      <div class="role-cta">
+        <a href="admin/login.php?role=admin" class="btn-outline" style="width: 100%;">เข้าสู่ระบบแอดมิน →</a>
+      </div>
+    </article>
+  </div>
+
+  <!-- UPCOMING EVENTS -->
+  <?php if ($upcoming): ?>
+    <div class="section-head">
+      <div>
+        <h2>งานวิ่งที่น่าสนใจ</h2>
+        <p>งานที่เปิดรับสมัครและกำลังจะมาถึง</p>
+      </div>
+      <a href="calendar.php" class="btn-outline" style="padding: 8px 18px; font-size: 0.88rem;">ดูทั้งหมด →</a>
+    </div>
+
+    <div class="event-grid">
+      <?php foreach ($upcoming as $ev): ?>
+        <a href="event.php?id=<?= (int) $ev['id'] ?>" class="event-tile">
+          <div class="event-tile-media">
+            <img src="<?= e(event_banner($ev['banner'] ?? '')) ?>" alt="<?= e($ev['title']) ?>">
+            <?php if (($ev['status'] ?? '') === 'open'): ?>
+              <span class="badge-open">เปิดรับสมัคร</span>
+            <?php else: ?>
+              <span class="badge-upcoming">เร็วๆ นี้</span>
+            <?php endif; ?>
+          </div>
+          <div class="event-tile-body">
+            <h3><?= e($ev['title']) ?></h3>
+            <div class="event-tile-meta">📅 <?= e(thai_date($ev['event_date'])) ?></div>
+            <div class="event-tile-meta">📍 <?= e($ev['province']) ?></div>
+            <div class="event-tile-meta">🏃 <?= e($ev['distances']) ?></div>
+            <div class="event-tile-price">฿<?= number_format((int) $ev['price_min']) ?> – ฿<?= number_format((int) $ev['price_max']) ?></div>
+            <div class="event-tile-footer">
+              <span class="btn-primary" style="width: 100%; padding: 9px 16px; font-size: 0.88rem;">ดูรายละเอียด →</span>
+            </div>
+          </div>
+        </a>
+      <?php endforeach; ?>
+    </div>
+  <?php endif; ?>
+
+  <!-- CTA -->
+  <section class="cta-panel">
+    <div>
+      <h2>พร้อมออกสตาร์ทไปด้วยกันหรือยัง?</h2>
+      <p>สมัครวันนี้ รับสิทธิ์ Early Bird และของที่ระลึกสุดพิเศษ Limited Edition</p>
+    </div>
+    <a href="pages/register.php" class="btn-light">👉 สมัครวิ่งออนไลน์</a>
+  </section>
 </div>
 
-</body>
-</html>
+<?php include __DIR__ . '/includes/footer.php'; ?>
